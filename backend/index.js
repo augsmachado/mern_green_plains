@@ -7,6 +7,8 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 
+import status from "./routes/status.routes.js";
+
 // Initialize dotenv
 dotenv.config();
 
@@ -37,26 +39,8 @@ app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 
-// Request application status
-app.get("/", async (req, res) => {
-	try {
-		let response = {
-			msg: "Current API status",
-			name: process.env.PROJECT_NAME,
-			environment: process.env.PROJECT_ENVIRONMENT,
-			version: process.env.PROJECT_VERSION,
-			uptime: new Date().getTime(),
-			hash: uuidv4(),
-		};
-
-		res.json(response);
-	} catch (err) {
-		res.status(500).json({
-			error: "Unable to request API status",
-			details: `${err}`,
-		});
-	}
-});
+// Application routes
+app.use("/", status);
 
 app.use("*", (req, res) => {
 	res.status(400).json({ error: "Not route found" });
@@ -65,3 +49,5 @@ app.use("*", (req, res) => {
 app.listen(PORT, () => {
 	console.log(`Server running in port: ${PORT}`);
 });
+
+export default app;
